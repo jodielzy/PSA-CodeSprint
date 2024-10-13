@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Port-to-Port Data Exchange</title>
+    <link rel="stylesheet" href="static/style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="/" class="nav-link">Home</a>
+        <a href="/vessel-to-port" class="nav-link">Vessel-to-Port Data Exchange</a>
+        <a href="/port-to-port" class="nav-link active">Port-to-Port Data Exchange</a>
+        <a href="/berth-allocation" class="nav-link">Berth Allocation</a>
+    </nav>
+
+    <!-- Main Section -->
+    <section class="main-content">
+        <h2>World Map - Port-to-Port Communication</h2>
+        <label for="departure_date">Select Departure Date:</label>
+        <input type="date" id="departure_date" name="departure_date">
+        <button onclick="fetchPortData()">Get Ports</button>
+        <div id="map" style="height: 80vh; width: 100%;"></div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 PSA CodeSprint Project. All rights reserved.</p>
+    </footer>
+
+    <!-- Date Picker -->
+    <label for="departure_date">Select Departure Date:</label>
+    <input type="date" id="departure_date" name="departure_date">
+
+    <button onclick="fetchPortData()">Get Ports</button>
+
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.min.js"></script>
+    <script>
+        const singaporeDestination = [1.278443729546598, 103.76286478131723];
+        const map = L.map('map').setView(singaporeDestination, 14);
+
+        const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{x}/{y}', {
+            attribution: 'Tiles © Esri'
+        });
+
+        L.control.layers({"OpenStreetMap": osmLayer, "Satellite View": satelliteLayer}).addTo(map);
+
+        L.circleMarker(singaporeDestination, {
+            radius: 8, color: "red", fillColor: "red", fillOpacity: 1
+        }).addTo(map).bindPopup("PSA");
+
+        function fetchPortData() {
+            const date = document.getElementById('departure_date').value;
+            if (!date) {
+                alert('Please select a date!');
+                return;
+            }
+
+            fetch(`http://localhost:5000/data/ports?date=${date}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Fetched Data:", data)
+                    map.eachLayer(layer => {
+                        if (layer instanceof L.Marker && !layer._popup._content.includes("PSA")) {
+                            map.removeLayer(layer);
+                        }
+                    });
+
+                    data.forEach(port => {
+                        if (!isNaN(port.coords[0]) && !isNaN(port.coords[1])) {
+                            L.marker([port.coords[0], port.coords[1]])
+                                .addTo(map)
+                                .bindPopup(`
+                                    <b>Port ID:</b> ${port.id}<br>
+                                    <b>Distance to Singapore:</b> ${port.distance} nautical miles<br>
+                                    <b>Vessel_id:</b> ${port.vessel_id}<br>
+                                    <b>Departure Date:</b> ${port.departure_date}<br>
+                                    <b>Departure Time:</b> ${port.departure_hour}
+                                `);
+                        }
+                    });
+                })
+                .catch(error => console.error('Error fetching port data:', error));
+        }
+
+        const socket = io('http://localhost:5000');
+        socket.on('message', event => {
+            console.log('Real-time update:', event);
+            alert(event);
+        });
+
+        socket.on('connect_error', error => {
+            console.error('WebSocket error:', error);
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,120 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dynamic Vessel Simulation</title>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDtUQSoHxSVcV-qgK_TuO2mZCeXuvthcow"></script>
+    <script>
+        let map;
+        const target = { lat: 1.278443729546598, lng: 103.76286478131723 };
+        const markers = [];
+
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: target,
+                zoom: 8
+            });
+
+            // Define event zones
+            const eventZones = [
+                { lat: 1.675, lng: 102.52, radius: 30000, event: 'Storm' },  // Adjusted to sea between Bengkalis Island and Batu Pahat
+                { lat: 1.7, lng: 102.2, radius: 20000, event: 'Political Unrest' }
+            ];
+
+            // Mark event zones with a red circle
+            eventZones.forEach((zone) => {
+                const eventCircle = new google.maps.Circle({
+                    strokeColor: '#FF0000',
+                    strokeOpacity: 0.8,
+                    strokeWeight: 2,
+                    fillColor: '#FF0000',
+                    fillOpacity: 0.35,
+                    map,
+                    center: { lat: zone.lat, lng: zone.lng },
+                    radius: zone.radius  // Radius in meters
+                });
+
+                // Optional: Add an info window to describe the event
+                const eventInfoWindow = new google.maps.InfoWindow({
+                    content: `<strong>${zone.event}</strong>`
+                });
+
+                google.maps.event.addListener(eventCircle, 'click', function(ev) {
+                    eventInfoWindow.setPosition(ev.latLng);
+                    eventInfoWindow.open(map);
+                });
+            });
+
+            // Coordinates data passed as JSON
+            const coordinates = [{"latitude": 1.3052066595, "longitude": 104.02746488291731, "vessel_id": 6065, "actual_time": "2024-01-18 21:54:00", "delay_info": [2, "Storm"]}, {"latitude": 1.3052066595, "longitude": 104.02746488291731, "vessel_id": 4143, "actual_time": "2024-01-16 21:17:00", "delay_info": [2, "Storm"]}, {"latitude": 1.3052066595, "longitude": 104.02746488291731, "vessel_id": 6582, "actual_time": "2024-01-11 05:00:00", "delay_info": [2, "Storm"]}, {"latitude": 1.3052066595, "longitude": 104.02746488291731, "vessel_id": 3699, "actual_time": "2024-01-23 23:24:00", "delay_info": [2, "Storm"]}, {"latitude": 1.1645833445, "longitude": 103.6166666535, "vessel_id": 3752, "actual_time": "2024-01-10 04:49:00", "delay_info": [2, "Storm"]}, {"latitude": 1.170416688, "longitude": 103.64333108478365, "vessel_id": 1171, "actual_time": "2024-01-08 06:42:00", "delay_info": [2, "Storm"]}, {"latitude": 1.8290091666666664, "longitude": 102.37028212945444, "vessel_id": 5082, "actual_time": "2024-01-25 05:59:00", "delay_info": [2, "Storm"]}, {"latitude": 1.8047319109027944, "longitude": 102.42442633128908, "vessel_id": 9688, "actual_time": "2024-01-20 19:08:00", "delay_info": [2, "Storm"]}, {"latitude": 1.8047319109027944, "longitude": 102.42442633128908, "vessel_id": 3985, "actual_time": "2024-01-16 15:28:00", "delay_info": [2, "Storm"]}, {"latitude": 1.4279557760000001, "longitude": 104.08482446459018, "vessel_id": 3889, "actual_time": "2024-01-22 17:29:00", "delay_info": [2, "Storm"]}, {"latitude": 1.4279557760000001, "longitude": 104.08482446459018, "vessel_id": 4285, "actual_time": "2024-01-22 08:55:00", "delay_info": [2, "Storm"]}, {"latitude": 18.414595, "longitude": -69.61626347664588, "vessel_id": 3302, "actual_time": "2024-01-30 09:01:00", "delay_info": [2, "Storm"]}, {"latitude": 25.43330422124326, "longitude": 55.447174321494046, "vessel_id": 8962, "actual_time": "2024-01-03 12:21:00", "delay_info": [2, "Storm"]}, {"latitude": 49.5178733435, "longitude": -0.8102766509999999, "vessel_id": 3492, "actual_time": "2024-01-22 08:33:00", "delay_info": [2, "Storm"]}, {"latitude": 12.569475131499999, "longitude": 100.984487312, "vessel_id": 9633, "actual_time": "2024-01-10 15:49:00", "delay_info": [2, "Storm"]}, {"latitude": -5.982055, "longitude": 12.1285825, "vessel_id": 7237, "actual_time": "2024-01-02 20:41:00", "delay_info": [2, "Storm"]}, {"latitude": -34.2156903675, "longitude": -58.816363770847474, "vessel_id": 1288, "actual_time": "2024-01-20 16:22:00", "delay_info": [2, "Storm"]}, {"latitude": 2.72436, "longitude": 9.856365415441175, "vessel_id": 8370, "actual_time": "2024-01-10 15:52:00", "delay_info": [2, "Storm"]}, {"latitude": 22.659005499000003, "longitude": 113.76586937550303, "vessel_id": 5240, "actual_time": "2024-01-14 23:50:00", "delay_info": [2, "Storm"]}, {"latitude": 21.2946656435, "longitude": 39.03905290672597, "vessel_id": 4176, "actual_time": "2024-01-04 01:05:00", "delay_info": [2, "Storm"]}, {"latitude": 37.3069, "longitude": -77.26577345709572, "vessel_id": 9004, "actual_time": "2024-01-15 01:35:00", "delay_info": [2, "Storm"]}, {"latitude": 43.952749999999995, "longitude": 141.6393658736942, "vessel_id": 1140, "actual_time": "2024-01-15 14:34:00", "delay_info": [2, "Storm"]}, {"latitude": 7.075850000000001, "longitude": 125.64850127717392, "vessel_id": 5432, "actual_time": "2024-01-02 10:48:00", "delay_info": [2, "Storm"]}, {"latitude": 10.849150442518294, "longitude": 79.90441316545379, "vessel_id": 5838, "actual_time": "2024-01-23 09:58:00", "delay_info": [2, "Storm"]}, {"latitude": 34.126425, "longitude": 132.90408182142858, "vessel_id": 2240, "actual_time": "2024-01-03 03:59:00", "delay_info": [2, "Storm"]}, {"latitude": -34.213756578499996, "longitude": -58.81387241581898, "vessel_id": 7719, "actual_time": "2024-01-10 15:16:00", "delay_info": [2, "Storm"]}, {"latitude": 60.458235, "longitude": 26.936637586999066, "vessel_id": 7584, "actual_time": "2024-01-28 00:30:00", "delay_info": [2, "Storm"]}, {"latitude": -0.931845, "longitude": -80.69801022097626, "vessel_id": 8948, "actual_time": "2024-01-05 11:44:00", "delay_info": [2, "Storm"]}, {"latitude": 13.88988, "longitude": 121.74835505314022, "vessel_id": 2790, "actual_time": "2024-01-06 16:36:00", "delay_info": [2, "Storm"]}, {"latitude": -5.466915, "longitude": 122.57748045819936, "vessel_id": 3846, "actual_time": "2024-01-28 12:43:00", "delay_info": [2, "Storm"]}, {"latitude": 40.707181007, "longitude": 121.10910156740091, "vessel_id": 6121, "actual_time": "2024-01-20 09:12:00", "delay_info": [2, "Storm"]}, {"latitude": -26.200035, "longitude": -48.531688099621036, "vessel_id": 2708, "actual_time": "2024-01-26 08:41:00", "delay_info": [2, "Storm"]}, {"latitude": 21.383822522499997, "longitude": 108.69943419113375, "vessel_id": 7880, "actual_time": "2024-01-13 18:27:00", "delay_info": [2, "Storm"]}, {"latitude": 54.2978372325, "longitude": 14.119080450565118, "vessel_id": 6997, "actual_time": "2024-01-13 00:32:00", "delay_info": [2, "Storm"]}, {"latitude": -20.928475, "longitude": 55.30387331632653, "vessel_id": 5617, "actual_time": "2024-01-19 13:10:00", "delay_info": [2, "Storm"]}, {"latitude": 45.915364165, "longitude": -83.22330028402038, "vessel_id": 9255, "actual_time": "2024-01-16 10:00:00", "delay_info": [2, "Storm"]}, {"latitude": 26.785872196, "longitude": 53.345785362092386, "vessel_id": 4090, "actual_time": "2024-01-07 07:50:00", "delay_info": [2, "Storm"]}, {"latitude": 18.23718, "longitude": -71.03002756165607, "vessel_id": 1726, "actual_time": "2024-01-13 21:20:00", "delay_info": [2, "Storm"]}, {"latitude": 36.94137866143137, "longitude": -76.0370182609274, "vessel_id": 2178, "actual_time": "2024-01-10 13:40:00", "delay_info": [2, "Storm"]}, {"latitude": 54.604542804, "longitude": 19.80356472115065, "vessel_id": 2363, "actual_time": "2024-01-20 17:02:00", "delay_info": [2, "Storm"]}, {"latitude": -6.15423, "longitude": 39.189082618389904, "vessel_id": 5899, "actual_time": "2024-01-27 00:42:00", "delay_info": [2, "Storm"]}, {"latitude": 34.228574568, "longitude": 132.92107666752935, "vessel_id": 5181, "actual_time": "2024-01-18 17:13:00", "delay_info": [2, "Storm"]}, {"latitude": 30.644585, "longitude": 18.368678143965518, "vessel_id": 3728, "actual_time": "2024-01-19 01:39:00", "delay_info": [2, "Storm"]}, {"latitude": 1.40808, "longitude": 9.229674270009237, "vessel_id": 1756, "actual_time": "2024-01-23 13:04:00", "delay_info": [2, "Storm"]}, {"latitude": 32.4756233205, "longitude": 34.85814027534518, "vessel_id": 5279, "actual_time": "2024-01-07 15:38:00", "delay_info": [2, "Storm"]}, {"latitude": -33.84597777854651, "longitude": 25.716890157200396, "vessel_id": 2524, "actual_time": "2024-01-04 03:45:00", "delay_info": [2, "Storm"]}, {"latitude": -20.1366200155, "longitude": 118.5116619284512, "vessel_id": 7480, "actual_time": "2024-01-01 20:58:00", "delay_info": [2, "Storm"]}, {"latitude": 37.45462258346379, "longitude": 126.60070823505521, "vessel_id": 3370, "actual_time": "2024-01-18 05:50:00", "delay_info": [2, "Storm"]}, {"latitude": -46.386184166666666, "longitude": -67.48581084954719, "vessel_id": 8649, "actual_time": "2024-01-25 16:03:00", "delay_info": [2, "Storm"]}, {"latitude": -1.2291949999999998, "longitude": 116.78520125, "vessel_id": 8428, "actual_time": "2024-01-06 23:56:00", "delay_info": [2, "Storm"]}, {"latitude": 14.503620833333335, "longitude": 49.111705740239444, "vessel_id": 2388, "actual_time": "2024-01-02 00:22:00", "delay_info": [2, "Storm"]}, {"latitude": 50.095341419, "longitude": -5.018040559946362, "vessel_id": 2233, "actual_time": "2024-01-21 06:01:00", "delay_info": [2, "Storm"]}, {"latitude": 20.909220557, "longitude": 87.195817740856, "vessel_id": 5695, "actual_time": "2024-01-13 04:45:00", "delay_info": [2, "Storm"]}, {"latitude": 43.746, "longitude": -81.72777412103491, "vessel_id": 6774, "actual_time": "2024-01-05 20:00:00", "delay_info": [2, "Storm"]}, {"latitude": -8.895425, "longitude": 116.74582923387096, "vessel_id": 2667, "actual_time": "2024-01-04 23:00:00", "delay_info": [2, "Storm"]}, {"latitude": 69.357415, "longitude": 18.083674841046054, "vessel_id": 8612, "actual_time": "2024-01-14 10:24:00", "delay_info": [2, "Storm"]}, {"latitude": 3.9928999999999997, "longitude": 9.121211967761557, "vessel_id": 4952, "actual_time": "2024-01-03 06:28:00", "delay_info": [2, "Storm"]}, {"latitude": -5.555145833333333, "longitude": 105.3241356331167, "vessel_id": 1915, "actual_time": "2024-01-09 15:36:00", "delay_info": [2, "Storm"]}, {"latitude": 55.6988467825, "longitude": 12.933027558288757, "vessel_id": 7398, "actual_time": "2024-01-20 21:13:00", "delay_info": [2, "Storm"]}, {"latitude": -22.132149166666665, "longitude": -39.96680568975631, "vessel_id": 3186, "actual_time": "2024-01-08 06:06:00", "delay_info": [2, "Storm"]}, {"latitude": 40.57428, "longitude": 141.52701874545454, "vessel_id": 9364, "actual_time": "2024-01-12 21:59:00", "delay_info": [2, "Storm"]}, {"latitude": -6.81326, "longitude": 146.97887070607175, "vessel_id": 9401, "actual_time": "2024-01-05 22:05:00", "delay_info": [2, "Storm"]}, {"latitude": 22.142058829, "longitude": 113.80628241425, "vessel_id": 7830, "actual_time": "2024-01-15 07:03:00", "delay_info": [2, "Storm"]}, {"latitude": 10.448616044000001, "longitude": -14.748308264832051, "vessel_id": 6588, "actual_time": "2024-01-01 05:14:00", "delay_info": [2, "Storm"]}, {"latitude": -33.05058981757611, "longitude": 17.97768135367545, "vessel_id": 5069, "actual_time": "2024-01-02 14:50:00", "delay_info": [2, "Storm"]}, {"latitude": 5.738035, "longitude": 4.444227640013178, "vessel_id": 4269, "actual_time": "2024-01-10 23:06:00", "delay_info": [2, "Storm"]}, {"latitude": 36.730321878, "longitude": 31.086489753000002, "vessel_id": 6684, "actual_time": "2024-01-06 07:12:00", "delay_info": [2, "Storm"]}, {"latitude": 21.9171369955, "longitude": 113.9505603051194, "vessel_id": 6883, "actual_time": "2024-01-13 18:45:00", "delay_info": [2, "Storm"]}, {"latitude": 53.51000300050001, "longitude": 9.925321217632899, "vessel_id": 3774, "actual_time": "2024-01-21 07:54:00", "delay_info": [2, "Storm"]}, {"latitude": 30.366539172828197, "longitude": 32.3805193061293, "vessel_id": 1545, "actual_time": "2024-01-07 03:25:00", "delay_info": [2, "Storm"]}, {"latitude": 60.017585, "longitude": 23.9272412080388, "vessel_id": 5405, "actual_time": "2024-01-10 04:46:00", "delay_info": [2, "Storm"]}, {"latitude": 37.02311558648944, "longitude": 126.3321641237425, "vessel_id": 2428, "actual_time": "2024-01-21 05:48:00", "delay_info": [2, "Storm"]}, {"latitude": 34.38892263919115, "longitude": 133.0986831286665, "vessel_id": 4997, "actual_time": "2024-01-09 19:29:00", "delay_info": [2, "Storm"]}, {"latitude": 32.98812351655215, "longitude": 131.9355403523245, "vessel_id": 6602, "actual_time": "2024-01-20 11:59:00", "delay_info": [2, "Storm"]}, {"latitude": -23.849849933, "longitude": 151.59333299550002, "vessel_id": 5116, "actual_time": "2024-01-21 19:11:00", "delay_info": [2, "Storm"]}, {"latitude": 35.49161912407726, "longitude": 139.90067465230823, "vessel_id": 6575, "actual_time": "2024-01-25 06:54:00", "delay_info": [2, "Storm"]}, {"latitude": 64.21932, "longitude": 23.705635750605325, "vessel_id": 9272, "actual_time": "2024-01-22 02:38:00", "delay_info": [2, "Storm"]}, {"latitude": 33.95106454845518, "longitude": 135.08791979292135, "vessel_id": 6098, "actual_time": "2024-01-18 22:33:00", "delay_info": [2, "Storm"]}, {"latitude": 37.820155, "longitude": 120.83809473227399, "vessel_id": 6847, "actual_time": "2024-01-27 08:16:00", "delay_info": [2, "Storm"]}, {"latitude": -33.584803878329694, "longitude": -71.63160966010764, "vessel_id": 8476, "actual_time": "2024-01-19 05:51:00", "delay_info": [2, "Storm"]}, {"latitude": 32.2421819945, "longitude": 119.14273330265223, "vessel_id": 2289, "actual_time": "2024-01-27 16:18:00", "delay_info": [2, "Storm"]}, {"latitude": 30.115472500000003, "longitude": -88.56061617312241, "vessel_id": 9102, "actual_time": "2024-01-17 16:54:00", "delay_info": [2, "Storm"]}, {"latitude": 26.955025, "longitude": 56.354579550950916, "vessel_id": 3679, "actual_time": "2024-01-10 05:02:00", "delay_info": [2, "Storm"]}, {"latitude": 27.9424, "longitude": 121.08389000231526, "vessel_id": 7830, "actual_time": "2024-01-23 10:16:00", "delay_info": [2, "Storm"]}, {"latitude": 30.2164583045, "longitude": 121.80822303211785, "vessel_id": 8847, "actual_time": "2024-01-22 23:21:00", "delay_info": [2, "Storm"]}, {"latitude": 22.131779473, "longitude": 113.7813947625, "vessel_id": 9989, "actual_time": "2024-01-02 11:41:00", "delay_info": [2, "Storm"]}, {"latitude": 43.21406, "longitude": 141.27366451799543, "vessel_id": 8963, "actual_time": "2024-01-28 01:12:00", "delay_info": [2, "Storm"]}, {"latitude": 52.0009532335, "longitude": 1.2248981073352954, "vessel_id": 2101, "actual_time": "2024-01-18 01:14:00", "delay_info": [2, "Storm"]}, {"latitude": -6.871666652, "longitude": 110.37500004200001, "vessel_id": 3324, "actual_time": "2024-01-25 00:07:00", "delay_info": [2, "Storm"]}, {"latitude": 9.37042, "longitude": -79.88495609682153, "vessel_id": 4645, "actual_time": "2024-01-08 15:38:00", "delay_info": [2, "Storm"]}, {"latitude": 49.076909045, "longitude": 142.00770558588982, "vessel_id": 1631, "actual_time": "2024-01-29 19:28:00", "delay_info": [2, "Storm"]}, {"latitude": 34.639320806, "longitude": 134.98987875191787, "vessel_id": 7306, "actual_time": "2024-01-08 09:19:00", "delay_info": [2, "Storm"]}, {"latitude": 40.500807906000006, "longitude": 27.145055333132824, "vessel_id": 7231, "actual_time": "2024-01-12 10:26:00", "delay_info": [2, "Storm"]}, {"latitude": 53.977895000000004, "longitude": -128.6718224560537, "vessel_id": 3131, "actual_time": "2024-01-04 00:48:00", "delay_info": [2, "Storm"]}, {"latitude": 13.44084, "longitude": -16.574810909776545, "vessel_id": 3038, "actual_time": "2024-01-20 08:59:00", "delay_info": [2, "Storm"]}, {"latitude": -0.999425, "longitude": 100.37713386331444, "vessel_id": 9812, "actual_time": "2024-01-27 15:57:00", "delay_info": [2, "Storm"]}, {"latitude": -28.5764074365, "longitude": 114.53828335337295, "vessel_id": 3401, "actual_time": "2024-01-23 01:14:00", "delay_info": [2, "Storm"]}, {"latitude": -11.701295, "longitude": 43.24863333843798, "vessel_id": 5271, "actual_time": "2024-01-21 05:44:00", "delay_info": [2, "Storm"]}, {"latitude": 32.69919550046325, "longitude": -117.15652239685278, "vessel_id": 2895, "actual_time": "2024-01-19 15:53:00", "delay_info": [2, "Storm"]}, {"latitude": 69.06160031910986, "longitude": 33.10087616068919, "vessel_id": 9505, "actual_time": "2024-01-17 14:48:00", "delay_info": [2, "Storm"]}, {"latitude": 43.573325, "longitude": -5.918971217474734, "vessel_id": 5731, "actual_time": "2024-01-01 10:28:00", "delay_info": [2, "Storm"]}];
+
+            coordinates.forEach((coord) => {
+                const delay = coord.delay_info[0];
+                const event = coord.delay_info[1];
+                let adjustedTime = new Date(coord.actual_time);
+
+                // Apply delay if the vessel is in an event zone
+                if (delay > 0) {
+                    adjustedTime.setHours(adjustedTime.getHours() + delay);
+                }
+
+                const markerColor = delay > 0 ? "http://maps.google.com/mapfiles/ms/icons/red-dot.png" : "http://maps.google.com/mapfiles/ms/icons/blue-dot.png";
+
+                const marker = new google.maps.Marker({
+                    position: { lat: coord.latitude, lng: coord.longitude },
+                    map: map,
+                    icon: markerColor
+                });
+
+                // Create an info window displaying vessel_id, predicted arrival time, and event details (if any)
+                let infoWindowContent = `<strong>Vessel ID:</strong> ${coord.vessel_id}<br>`;
+
+                if (adjustedTime) {
+                    infoWindowContent += `<strong>Predicted Arrival Time:</strong> ${adjustedTime.toISOString()}<br>`;
+                } else {
+                    infoWindowContent += `<strong>Predicted Arrival Time:</strong> Unknown<br>`;
+                }
+
+                if (event) {
+                    infoWindowContent += `<strong>Delay due to:</strong> ${event} (${delay} hrs)<br>`;
+                }
+
+                const infoWindow = new google.maps.InfoWindow({
+                    content: infoWindowContent
+                });
+
+                marker.addListener("click", () => {
+                    infoWindow.open(map, marker);
+                });
+
+                markers.push(marker);
+            });
+
+            // Start animation
+            moveMarkers();
+        }
+
+        function moveMarkers() {
+            markers.forEach((marker, index) => {
+                const pos = marker.getPosition();
+                const lat = pos.lat() + (target.lat - pos.lat()) * 0.00007; // Slower movement
+                const lng = pos.lng() + (target.lng - pos.lng()) * 0.00007; // Slower movement
+                marker.setPosition(new google.maps.LatLng(lat, lng));
+
+                // Check if the marker has reached the target
+                if (Math.abs(lat - target.lat) < 0.0001 && Math.abs(lng - target.lng) < 0.0001) {
+                    marker.setMap(null);  // Remove marker from map
+                    markers.splice(index, 1);  // Remove from array
+                }
+            });
+
+            if (markers.length > 0) {
+                requestAnimationFrame(moveMarkers);  // Continue animation if markers remain
+            }
+        }
+    </script>
+</head>
+<body onload="initMap()">
+    <div id="map" style="height: 100vh; width: 100%;"></div>
+</body>
+</html>

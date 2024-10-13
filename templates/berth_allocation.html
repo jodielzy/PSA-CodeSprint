@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Berth Allocation</title>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="/" class="nav-link">Home</a>
+        <a href="/vessel-to-port" class="nav-link">Vessel-to-Port Data Exchange</a>
+        <a href="/port-to-port" class="nav-link">Port-to-Port Data Exchange</a>
+        <a href="/berth-allocation" class="nav-link active">Berth Allocation</a>
+    </nav>
+
+    <!-- Main Section -->
+    <section class="main-content">
+        <h1>Berths and Vessel Information Map</h1>
+        <label for="datetime">Select Date and Time:</label>
+        <input type="datetime-local" id="datetime" name="datetime">
+        <button onclick="checkAvailability()">Check Availability</button>
+        <div id="map" style="height: 80vh; width: 100%;"></div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 PSA CodeSprint Project. All rights reserved.</p>
+    </footer>
+
+    <div id="map"></div>
+
+    <script src="/static/assignment.js"></script> <!-- Link the JavaScript logic -->
+
+    <script>
+        // Function to load vessels from the Flask backend
+        async function loadVessels() {
+            const response = await fetch('/api/vessels');
+            const vessels = await response.json();
+            return vessels.map(vessel => new Vessel(
+                vessel.vessel_id,
+                vessel.scheduled_time,
+                vessel.actual_time,
+                vessel.TEUs_carried,
+                vessel.cargo_type,
+                vessel.departure_time,
+                vessel.predicted_arrival,
+                vessel.distance
+            ));
+        }
+
+        // Initialize the map and markers for berths
+        function initMap() {
+            var center = { lat: 1.277488, lng: 103.762860 };
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 15,
+                center: center
+            });
+
+            // Load vessels and assign them to berths
+            loadVessels().then(vessels => {
+                assignVesselsToBerths(vessels);
+            });
+
+            // Define berth locations (simplified for brevity)
+            var berths = [
+                { id: 1, name: "Berth 1", latitude: 1.280353, longitude: 103.770467 },
+                { id: 2, name: "Berth 2", latitude: 1.279312, longitude: 103.769834 },
+                { id: 3, name: "Berth 3", latitude: 1.283001, longitude: 103.760725 },
+                { id: 4, name: "Berth 4", latitude: 1.279547, longitude: 103.766417 },
+                { id: 5, name: "Berth 5", latitude: 1.285586, longitude: 103.755485 },
+                { id: 6, name: "Berth 6", latitude: 1.284116, longitude: 103.752309 },
+                { id: 7, name: "Berth 7", latitude: 1.281617, longitude: 103.751000 },
+                { id: 8, name: "Berth 8", latitude: 1.279477, longitude: 103.752270 },
+                { id: 9, name: "Berth 9", latitude: 1.277632, longitude: 103.755504 },
+                { id: 10, name: "Berth 10", latitude: 1.275717, longitude: 103.758575 },
+                { id: 11, name: "Berth 11", latitude: 1.271926, longitude: 103.764732 },
+                { id: 12, name: "Berth 12", latitude: 1.270086, longitude: 103.771406 }
+            ];
+
+            berths.forEach(function(berth) {
+                var marker = new google.maps.Marker({
+                    position: { lat: berth.latitude, lng: berth.longitude },
+                    map: map,
+                    title: berth.name
+                });
+
+                marker.addListener('click', function() {
+                    showVesselInfoOnMap(berth.id, marker, map);  // Call to display vessel info on the map
+                });
+            });
+        }
+    </script>
+
+    <!-- Correct Google Maps API script tag -->
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDtUQSoHxSVcV-qgK_TuO2mZCeXuvthcow&callback=initMap">
+    </script>
+</body>
+</html>

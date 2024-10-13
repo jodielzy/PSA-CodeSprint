@@ -1,0 +1,166 @@
+/* General Body Styling */
+body {
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+    background-color: #f9fafc;
+    color: #333;
+}
+
+/* Navbar Styling */
+.navbar {
+    display: flex;
+    justify-content: center;
+    background-color: #003366;
+    padding: 10px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.nav-link {
+    color: white;
+    text-decoration: none;
+    padding: 12px 20px;
+    margin: 0 5px;
+    font-size: 1em;
+    font-weight: bold;
+}
+
+.nav-link:hover {
+    background-color: #005580;
+    border-radius: 5px;
+}
+
+.nav-link.active {
+    background-color: #0073e6;
+    border-radius: 5px;
+}
+
+/* Hero Section Styling */
+.hero {
+    position: relative;
+    text-align: center;
+    padding: 60px 20px;
+    background: url('/static/download.png') center/cover no-repeat; /* Update path to image */
+    color: white;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5); /* Dark overlay for readability */
+    z-index: 1;
+}
+
+.hero h1, .hero p, .hero button {
+    position: relative;
+    z-index: 2;
+}
+
+.hero h1 {
+    margin: 0;
+    font-size: 2.5em;
+    line-height: 1.2;
+}
+
+.hero p {
+    font-size: 1.2em;
+    margin: 10px 0 20px;
+}
+
+.hero button {
+    padding: 12px 24px;
+    font-size: 1em;
+    color: #0073e6;
+    background-color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.hero button:hover {
+    background-color: #f0f0f0;
+}
+
+/* Features Section Styling */
+.features {
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.features h2 {
+    font-size: 2em;
+    color: #333;
+    margin-bottom: 30px;
+}
+
+/* Card Layout for Features */
+.cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+.card {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    width: 280px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s;
+    text-align: center;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card a {
+    text-decoration: none;
+    font-weight: bold;
+    color: #003366;
+    font-size: 1.2em;
+}
+
+.card a:hover {
+    color: #0073e6;
+}
+
+.card p {
+    font-size: 1em;
+    color: #666;
+    margin-top: 10px;
+}
+
+/* Footer Styling */
+footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #003366;
+    color: white;
+    font-size: 0.9em;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .navbar, .hero, .cards {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .card {
+        width: 90%;
+    }
+}
