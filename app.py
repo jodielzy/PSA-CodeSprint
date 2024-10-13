@@ -10,6 +10,7 @@ from datetime import datetime
 app = Flask(__name__)
 CORS(app)
 socketio = SocketIO(app, cors_allowed_origins="*")
+socketio = SocketIO(app, async_mode="gevent")
 
 # Path to the CSV file
 csv_file_path = Path("Updated_Port_Data_with_Split_Departure_Time.csv")
